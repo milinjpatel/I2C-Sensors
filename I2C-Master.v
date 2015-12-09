@@ -24,12 +24,15 @@ begin
 		if (clk'event and clk = '1') then
 		if (reset = '1') then 
 			scl_int <= '1'; sda_int <= '1'; drd <= (others => '0'); 
-			done <= '1'; ack_e <= '0'; state <= waiting; end if; 
+			done <= '1'; ack_e <= '0'; state <= waiting; 
+		end if; 
 		case state is
 			when waiting => if (go = '1' and sda = '1' and scl = '1') then
-				RTX <= R_Pointer; R <= dev_add&'0'; NB <= N_Byte; 						R_W <= rw; ack_e <= '0'; done <= '0'; state <= start; 
-			else scl_int <= '1'; sda_int <= '1'; end if;
-			when start => if (rbit = '1') then sda_int <= '0';
+						RTX <= R_Pointer; R <= dev_add&'0'; NB <= N_Byte; 
+						R_W <= rw; ack_e <= '0'; done <= '0'; state <= start; 
+					else scl_int <= '1'; sda_int <= '1'; 
+					end if;
+			when start =>   if (rbit = '1') then sda_int <= '0';
 					elsif (ne = '1' and sda = '0') then scl_int <= '0'; bc <= 8; 								state <= d_add; end if;
 			when d_add => if (wbit = '1') then 
 						if (bc > 0) then sda_int <= R(bc-1); bc <= bc - 1; 								end if;
